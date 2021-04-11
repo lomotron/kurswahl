@@ -44,6 +44,14 @@ function waehlbar(n) {
     if(n==p.L2) return false;
     if(n==p.L3) return false;
     if(n==p.M1) return false;
+    
+    //BkMu regel:Leistung3 Musik schließt Bk aus und
+    //umgekehrt:
+    w=f[n]
+    if((w.fname == "Musik" ) && (p.FAECHER[p.L3].fname == "Bildende Kunst" ))
+        return false;
+    if((w.fname ==  "Bildende Kunst") && (p.FAECHER[p.L3].fname == "Musik" ))
+        return false; 
 
     if(f[n].typ=="Wirtschaft") return false;  //keine Wirtschaft da nur Leistungsfach
 

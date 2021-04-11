@@ -62,7 +62,7 @@ addfach("Astronomie",2,2,0,0,"Wahl");
 addfach("Darstellende Geometrie",2,2,0,0,"Wahl");
 //addfach("Computer-Algebra-System",2,2,0,0,"Wahl");
 //addfach("Geologie",2,2,0,0,"Wahl");
-addfach("Informatik",2,2,0,0,"Informatik");
+//addfach("Informatik",2,2,0,0,"Informatik");
 addfach("Informatik in J1/J2",2,2,2,2,"Informatik");
     
 // addfach("Literatur u. Theater",2,2,2,2,"Wahl");

@@ -86,7 +86,11 @@ function waehlbar(n) {
     //ab jetzt nur GW
     if(f[n].typ=="Gesellschaft") return true;
     if(f[n].typ=="Wirtschaft") return true;
-    if(f[n].typ=="Religion") return (f[n].fname==window.parent.RELIGION);
+    
+    //Releigion oder ethik im 3. fach erlaubt, wenn in 10 gewählt:
+    //if(f[n].typ=="Religion") return (f[n].fname==window.parent.RELIGION);
+    if(f[n].typ=="Religion") return false;
+
     return false;
 }
 

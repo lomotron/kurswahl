@@ -37,7 +37,16 @@ function weiter() {
 
 function waehlbar(index) {
     var p=window.parent,w=p.WAHL[index];
-    if((p.SPORTBEFREIT=='ja') && (w.fname=="Sport")) return false;
+    if((p.SPORTBEFREIT=='ja') && (w.fname=="Sport")) 
+        return false;
+    if((w.fname == "Musik" ) && (p.FAECHER[p.BkMu].fname == "Bildende Kunst" ))
+        return false;
+    if((w.fname ==  "Bildende Kunst") && (p.FAECHER[p.BkMu].fname == "Musik" ))
+        return false; 
+    if((w.fname == "Musik" ) && (p.FAECHER[p.L3].fname == "Bildende Kunst" ))
+        return false;
+    if((w.fname ==  "Bildende Kunst") && (p.FAECHER[p.L3].fname == "Musik" ))
+        return false; 
     return (w.apflicht==0) && (w.bpflicht==0);
 }
 
