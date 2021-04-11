@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    return true;
+}
+
+function seminarkurse() {
+    var f=window.parent.FAECHER,i,text="";
+    for(i=0;i<f.length;i++) {
+        if((f[i].typ=="Seminar1")||(f[i].typ=="Seminar2")) text+="<p style='text-align: center;'>"+f[i].fname+"</p>";
+        }
+    if(text=="") text="<p style='text-align: center;'>(Noch nichts angegeben)</p>";
+    return text;
+}
+</script>
+</head>
+<body>
+<header>
+<h1>Info: bes. Lernleistung</h1>
+</header>
+<content>
+<p>Als <b>besondere Lernleistung</b> werden folgende <b>Seminarkurse</b> angeboten:</p>
+<script>document.write(seminarkurse());</script>
+
+<!--
+    <p>Statt der Teilnahme an einem Seminarkurs kann auch eine den Anforderungen genügende, geeignete Arbeit aus einem <b>Wettbewerb</b>, einem
+<b>Schülerstudium</b> sowie einem <b>Praktikum</b> oder aus einem <b>gesellschaftlichen Engagement in Gremien</b> eingebracht werden, die schulischen Referenzfächern zugeordnet werden können. Beiträge zu Gruppenarbeiten können als besondere Lernleistung nur dann berücksichtigt werden, wenn Einzelleistungen zugeordnet und bewertet werden können.<p>
+-->
+<p>Die Schule ordnet die besondere Lernleistung entweder dem naturwissenschaftlichen (nw) oder dem gesellschaftswissenschaftlichen (gw) Bereich zu.</p>
+<p>Die besondere Lernleistung zählt entweder wie zwei Kurse oder sie kann eine mündliche Abiturprüfung (aber nicht in Deutsch oder Mathematik) ersetzen.  Darüber können Sie erst nach der schriftlichen Abiturprüfung entscheiden.<p>
+</content>
+<footer>
+</footer>
+</body>
+</html>

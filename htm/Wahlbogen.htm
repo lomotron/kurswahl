@@ -1,0 +1,280 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+<style type="text/css">
+@page { size: A4; margin: 20pt; margin-top: 30pt; }
+
+@media print
+{
+   html, body { font-family: 'Verdana', 'Arial'; font-size:12pt; width:210mm; height: 297mm;} 
+
+   h2 { font-size: 14pt; text-align: left; }
+
+   p { font-size: 12pt; text-align: left;  }
+
+   table { width: 100%; }
+   
+   th, td { font-size: 12pt; border-collapse: collapse; border: 1px solid black; }
+
+   .noprint { display:none; }
+   
+   .break { page-break-before: always; }
+}
+</style>
+
+<script>
+var heutegeburtstag=false;
+
+function getdatum() {
+    var d=new Date(),z=window.parent.GEBURT,i,gtag,gmonat;
+    var tag=d.getDate(),monat=d.getMonth()+1,jahr=d.getFullYear(),h=d.getHours(),m=d.getMinutes();
+    if(h<10) h="0"+h;
+    if(m<10) m="0"+m;
+    i=z.indexOf(".");
+    gtag=parseInt(z.substring(0,i));
+    z=z.substring(i+1);
+    i=z.indexOf(".");
+    gmonat=parseInt(z.substring(0,i));
+    heutegeburtstag=((tag==gtag)&&(monat==gmonat));
+    return tag+"."+monat+"."+jahr+" "+h+":"+m;
+}
+
+var datum=getdatum();
+
+function zurueck() {
+    var p=window.parent,i;
+    for(i=0;i<p.EXTRA.length;i++) p.extrawahl(p.EXTRA[i],false);  //Extrawahlen rückgängig machen
+    p.EXTRA=[];
+    return true;
+}
+
+function weiter() {
+    if(window.parent.navigation.pos_ok()) window.parent.inhalt.print(); 
+    else {alert("Nicht die Browsertasten benützen !"); return false; }
+    return false;
+}
+
+function druck(s) {
+    if(s==0) return "&nbsp;";
+    return s;
+}
+
+function wahlbogenhtml() {
+    var p=window.parent,i,w,sum1=0,sum2=0,sum3=0,sum4=0,sump=0,sumb=0,sumk=0,rest,diff,r="";
+    for(i=0;i<p.WAHL.length;i++) {
+        w=p.WAHL[i];
+        sum1+=w.s1; sum2+=w.s2; sum3+=w.s3; sum4+=w.s4;
+        sump+=w.apflicht; sumb+=w.bpflicht; sumk+=w.kuer;
+        }
+        
+    diff=42-sumb;
+    rest=sumk-diff;
+    
+    r="<table border>";
+    r+="<tr><td colspan=2><h2>Kurswahlbogen</h2></td><th colspan=7 rowspan=2><img src='"+p.LOGO+"'></th></tr>";
+    r+="<tr><td colspan=2 rowspan=2><b>"+p.NAME+", "+p.VORNAME+"</b>, "+p.GEBURT+", <b>"+p.KLASSE+"</b></td></tr>";
+    r+="<tr><th colspan=4>Wochenstunden in Halbjahr</th><th colspan=2>Pflichtkurse</th><th rowspan=2>Weitere Kurse</th></tr>";
+    r+="<tr><th>Fach</th><th>Merkmal</th><th>1</th><th>2</th><th>3</th><th>4</th><th>Abrechnung</th><th>Besuch</th></tr>";
+
+    for(i=0;i<p.WAHL.length;i++) {
+        w=p.WAHL[i];
+        r+="<tr><td>";
+        r+=w.fname+"</td><td>"+w.merkmal+"</td><td align=center>"+druck(w.s1)+"</td><td align=center>"+druck(w.s2);
+        r+="</td><td align=center>"+druck(w.s3)+"</td><td align=center>"+druck(w.s4)+"</td><td align=center>";
+        r+=druck(w.apflicht)+"</td><td align=center>"+druck(w.bpflicht)+"</td><td align=center>"+druck(w.kuer)+"</td></tr>";
+        }
+
+    r+="<tr><th>Summe</th><th>&nbsp;</th><th>"+sum1+"</th><th>"+sum2+"</th><th>"+sum3+"</th><th>"+sum4+"</th><th>";
+    r+=sump+"+"+(40-sump)+"</th><th>"+sumb;
+    if(42-sumb>0) r+="+"+(42-sumb);
+    r+="</th><th>"+sumk+"</th></tr>";
+    //if((p.SPORTBEFREIT=='nein')&&(p.FAECHER[p.L3].fname !="Sport")) r+="<tr><td colspan=9>&nbsp;<br>Ich wähle folgenden Sportbereich: <b>"+p.SPORTBEREICHE+"</b><br>&nbsp;</td></tr>";
+    r+="<tr><td><br>Datum:<br>&nbsp;</td><td colspan=8><br>Unterschrift:<br>&nbsp;</td></tr>"; 
+    r+="</table><p>Testversion vom "+p.VERSION+". Alle Angaben ohne Gewähr. Ausgedruckt: "+datum+"</p>";
+    return r;
+}
+
+
+
+function besuchspflicht() {
+    var p=window.parent, z, genannt="",anz=20;
+    var r="<p>Insgesamt sind mindestens 42 Kurse <b>besuchspflichtig</b>, d.h. in diesen Kursen dürfen Sie in keinem der Halbjahre eine Halbjahresnote von 0 Punkten bekommen. Dazu gehören: Ihre Leistungsfächer (";
+    r+=p.FAECHER[p.L1].fname+", "; genannt+=p.FAECHER[p.L1].fname+", ";
+    r+=p.FAECHER[p.L2].fname+", "; genannt+=p.FAECHER[p.L2].fname+", ";
+    r+=p.FAECHER[p.L3].fname; genannt+=p.FAECHER[p.L3].fname+", ";
+    r+="), ihre mündlichen Prüfungsfächer (";
+    z=p.FAECHER[p.M1].fname; 
+    if((z=="Geographie")||(z=="Gemeinschaftskunde")) z="Geographie und Gemeinschaftskunde";
+    r+=z+", "; genannt+=z+", ";
+    z=p.FAECHER[p.M2].fname;
+    if((z=="Geographie")||(z=="Gemeinschaftskunde")) z="Geographie und Gemeinschaftskunde";
+    r+=z; genannt+=z;
+    r+=") sowie ";
+    if(p.NW>0) { r+=p.FAECHER[p.NW].fname+", "; anz+=4; }
+    if(p.FS>0) { r+=p.FAECHER[p.FS].fname+", "; anz+=4; }
+    if(genannt.indexOf("Geschichte")<0) { r+="Geschichte, "; anz+=4; }
+    if(genannt.indexOf("Gemeinschaftskunde")<0) { 
+            r+="Gemeinschaftskunde, "; 
+            if(p.FAECHER[p.L3].fname=="Wirtschaft") anz++; else anz+=2; 
+            }
+    if(genannt.indexOf("Geographie")<0) { 
+            r+="Geographie, "; 
+            if(p.FAECHER[p.L3].fname=="Wirtschaft") anz++; else anz+=2; 
+            }
+    if(genannt.indexOf(p.RELIGION)<0) { r+=p.RELIGION+", "; anz+=4; }
+    if(p.NWFS>0) { r+=p.FAECHER[p.NWFS].fname+", "; anz+=4; }
+    if(p.BkMu>0) { r+=p.FAECHER[p.BkMu].fname+", "; anz+=4; }
+    if(p.SPORTBEFREIT=='ja') { r+=p.FAECHER[p.S].fname+", "; anz+=4; }
+    else if(genannt.indexOf("Sport")<0) { r+="Sport, "; anz+=4; }
+    r=r.substring(0,r.length-2);
+    r+=". ";
+    if(anz<42) r+="Da das nur "+anz+" Kurse von 42 Pflichtkursen sind, dürfen noch "+(42-anz)+" weitere ihrer Kurse im Halbjahreszeugnis nicht mit 0 Punkten bewertet werden.";
+    
+    r+="</p><p>In den 40 Kursen, die in Block 1 <b>abgerechnet</b> werden, müssen Sie insgesamt mindestens 200 Punkte erreichen. In höchstens 8 dieser Kurse, darunter höchstens 3 in den Leistungsfächern, dürfen die Halbjahresnoten weniger als 5 Punkte betragen.</p>";
+    
+    r+="<p>Die Ergebnisse der Abiturprüfung werden in Block 2 abgerechnet und jeweils vierfach gewertet. In den 5 Abiturprüfungen müssen Sie insgesamt mindestens 100 Punkte erreichen. In drei der Prüfungen, darunter zwei schriftliche, müssen Sie mindestens 20 Punkte erreichen. Kein Ergebnis der Abiturprüfung darf (in vierfacher Wertung) weniger als 4 Punkte betragen.</p>";
+       
+    return r;
+}
+
+function religionhinweis() {
+    var p=window.parent;
+    var r="",name="";
+    if(p.FAECHER[p.L3].typ=="Religion") {
+        name=p.FAECHER[p.L3].fname;
+        r+="Sie haben "+name+" als Leistungsfach gewählt. Ein Kurs in "+name+" kann als Leistungsfach nur gewählt werden, wenn in Klasse "+p.G89+" Unterricht im jeweiligen Fach im Umfang von mindestens einem Schulhalbjahr besucht wurde.";
+        }
+    name="";
+    if(p.FAECHER[p.M1].typ=="Religion") name=p.FAECHER[p.M1].fname;
+    if(p.FAECHER[p.M2].typ=="Religion") name=p.FAECHER[p.M2].fname;
+            
+    if(name!="") {
+         r+="Sie haben "+name+" als mündliches Prüfungsfach gewählt. ";
+         if(name=="Ethik") {
+         r+="Ethik kann nur dann als mündliches Prüfungsfach gewählt werden, wenn in Klasse "+p.G89+" Ethikunterricht im Umfang von mindestens einem Schulhalbjahr besucht wurde oder in einer Überprüfung zu Beginn des ersten Schulhalbjahres durch die Fachlehrkraft des Kurses entsprechende Kenntnisse nachgewiesen wurden.";
+                }
+         else  r+="Religionslehre kann als mündliches Prüfungsfach nur gewählt werden, wenn in Klasse "+p.G89+" Unterricht im Umfang von mindestens einem Schulhalbjahr besucht wurde oder in einer Überprüfung zu Beginn des ersten Schulhalbjahres durch die Fachlehrkraft entsprechende Kenntnisse nachgewiesen wurden; es sind die vier Kurse in Religionslehre entsprechend der eigenen Religionszugehörigkeit zu besuchen oder in den Ausnahmefällen vier Kurse in Religionslehre ein und derselben Religionsgemeinschaft.";
+        }
+            
+    if(r!="") r="<p>"+r+"</p>";
+    return r;
+}
+
+
+function sporthinweis() {
+    var p=window.parent, r="";
+    if(p.FAECHER[p.L3].fname=="Sport") {
+        r+="Wer vom Sportunterricht im Zeitpunkt der Kurswahl auch lediglich in einzelnen Inhaltsbereichen aufgrund ärztlichen Zeugnisses dauerhaft befreit ist, kann Sport nicht als Leistungsfach wählen.";
+        }    
+    else if((p.FAECHER[p.M1].fname=="Sport") || (p.FAECHER[p.M2].fname=="Sport")) {
+        r+="Sie haben Sport als mündliches Prüfungsfach gewählt. Bei einer auch lediglich teilweisen Befreiung vom Sportunterricht kommt die Wahl dieses Faches als mündliches Prüfungsfach nicht in Betracht.";
+        }
+    if(r!="") r="<p>"+r+"</p>";
+    return r;
+}
+
+function seminarkurshinweis() {
+    var r="",p=window.parent,name1="",name2="",geoname="Geographie/Gemeinschaftskunde";   
+    
+     //Sonderfall KKSt bili -------------------------
+                        if(p.kkstbili) geoname="Geographie (ital.)/Gemeinschaftskunde"; 
+     //----------------------------------------------     
+     
+    if((p.FAECHER[p.L3].typ=="Religion") || (p.FAECHER[p.L3].typ=="Gesellschaft") 
+                                         ||(p.FAECHER[p.L3].typ=="Wirtschaft")) {
+        if((p.FAECHER[p.M1].typ!="Deutsch") && (p.FAECHER[p.M1].typ!="Mathematik")) name1=p.FAECHER[p.M1].fname;
+        if((p.FAECHER[p.M2].typ!="Deutsch") && (p.FAECHER[p.M2].typ!="Mathematik")) name2=p.FAECHER[p.M2].fname;
+        if((name1!="") || (name2!="")) {
+            if((name1=="Geographie") || (name1=="Gemeinschaftskunde")) name1=geoname;
+            if((name2=="Geographie") || (name2=="Gemeinschaftskunde")) name2=geoname;
+            if(name1!="" && name2!="") name1=name1+" oder "+name2;
+            else name1=name1+name2;            
+            r="Eine besondere Lernleistung könnte ggf. die mündliche Abiturprüfung in "+name1+" ersetzen.";
+            }
+        }
+    else {
+        if((p.FAECHER[p.M1].typ=="Religion") || (p.FAECHER[p.M1].typ=="Gesellschaft")) name1=p.FAECHER[p.M1].fname;
+        if((p.FAECHER[p.M2].typ=="Religion") || (p.FAECHER[p.M2].typ=="Gesellschaft")) name2=p.FAECHER[p.M2].fname;
+        if((name1!="") || (name2!="")) {
+            if((name1=="Geographie") || (name1=="Gemeinschaftskunde")) name1=geoname;
+            if((name2=="Geographie") || (name2=="Gemeinschaftskunde")) name2=geoname;
+            if(name1!="" && name2!="") name1=name1+" oder "+name2;
+            else name1=name1+name2;   
+            
+            var bilitext="";
+      //Sonderfall KKSt bili -------------------------
+           if(p.kkstbili) bilitext=", auf Italien bezogenem Aspekt, sowie Dokumentation und Kolloquium in italienischer Sprache,"; 
+      //----------------------------------------------                       
+            
+            r="Eine besondere Lernleistung mit gesellschaftswissenschaftlichen Schwerpunkt"+bilitext+" könnte ggf. eine mündliche Abiturprüfung in "+name1+" ersetzen.";
+            }
+        }
+        
+    if(r!="") r="<p>"+r+"</p>";
+    return r;
+}
+
+
+function hinweise() {
+    var p=window.parent,dat=p.wahldaten(),sum=dat[5]+dat[6];
+    var text="",fehler=false,std=dat[0];
+    text+="<h2 class='break'>Hinweise</h2>";
+    if(dat[4]>40) { 
+        text+="<p><b>Kurswahlfehler: Anzahl der Pflichtkurse ("+dat[4]+") ist größer als 40</b><p>"; 
+        fehler=true; 
+        }
+    if(sum<42)    { 
+        text+="<p><b>Kurswahlfehler: Sie haben nicht insgesamt mindestens 42 Kurse gewählt, sondern nur "+sum+"</b></p>"; 
+        fehler=true; 
+        }
+
+    if(!fehler) {
+        if(dat[1]>std) std=dat[1];
+        if(dat[2]>std) std=dat[2];
+        if(dat[3]>std) std=dat[3];
+        if(std>p.MAXWOSTD) text+="<p>Sie haben teilweise sehr viele Wochenstunden !</p>";
+        if(dat[4]+dat[6]-42>p.MAXRESTKURSE) text+="<p>Beachten Sie, dass in Block 1 nur 40 Kurse abgerechnet werden können. Sie haben sehr viele Kurse gewählt</p>";
+        
+        text+=besuchspflicht();
+        text+=sporthinweis();
+        text+=religionhinweis();
+        text+=seminarkurshinweis();
+        
+        text+="<p>Die endgültige Wahl der mündlichen Prüfungsfächer erfolgt spätestens einen Schultag nach Ausgabe des Zeugnisses für das dritte Schulhalbjahr</p>";
+        text+="<p>Die endgültige Wahl der doppelt anzurechnenden Leistungsfächer und ggf. die Anrechnung einer besonderen Lernleistung anstatt einer mündlichen Prüfung erfolgt spätestens am nächsten auf die Ausgabe des Zeugnisses für das vierte Schulhalbjahr folgenden Schultag.</p>";
+        text+="<p>Die Wahl eines Kurses bedingt kein  Anrecht darauf, dass die Schule dieses Fach anbieten muss.</p>";
+        text+="<p>Testversion vom "+p.VERSION+". Alle Angaben ohne Gewähr. Ausgedruckt: "+datum+"</p>";
+        if(heutegeburtstag) text+="<p>Herzlichen Glückwunsch zum Geburtstag</p>";
+        }
+    return text;
+}
+
+</script>
+</head>
+<body>
+<div class="noprint">
+<header>
+<h1>Wahlbogen</h1>
+</header>
+<content>
+<p>Sie sind am Ende der Kurswahl angekommen. Den nachstehenden Wahlbogen können Sie durch Drücken der Weiter-Taste <b>ausdrucken</b> und dann bei Ihrem Oberstufenberater abgeben.</p>
+</div>
+<script>
+document.write(wahlbogenhtml()+hinweise());
+</script>
+<div class="noprint">
+<h2>Links</h2>
+<ul>
+<li><a href="../Leitfaden.pdf" target='_blank'>Leitfaden</a> für die gymnasiale Oberstufe</li>
+<li><a href="http://www.landesrecht-bw.de/jportal/?quelle=jlink&query=GymAbiPrV+BW+Inhaltsverzeichnis&psml=bsbawueprod.psml&max=true" target='_blank'>AGVO</a> auf www.landesrecht-bw.de,  als <a href="../GymAbiPrV_BW_2018.pdf" target='_blank'>pdf</a></li>
+</ul>
+</content>
+<footer>
+</footer>
+</div>
+</body>
+</html>

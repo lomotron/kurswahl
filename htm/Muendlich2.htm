@@ -1,0 +1,157 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=select("leistungsfach");
+    if(s<0) { alert("Es muss mindestens ein Item gewählt werden"); return false; }
+    window.parent.M2=s;
+    return true;
+}
+
+function waehlbar(n) {
+    var p=window.parent;
+    var f=p.FAECHER,i,fs=p.FREMDSPRACHE,ws=p.WAHLSPRACHE,anz40extra=0;
+    if(n==p.L1) return false;
+    if(n==p.L2) return false;
+    if(n==p.L3) return false;
+    if(n==p.M1) return false;
+
+    if(f[n].typ=="Wirtschaft") return false;  //keine Wirtschaft da nur Leistungsfach
+
+//Deutsch schon gewählt
+    var d=bereich(p.L1,"Deutsch") || bereich(p.L2,"Deutsch") 
+                     || bereich(p.L3,"Deutsch") || bereich(p.M1,"Deutsch");
+    if(!d) return (f[n].typ=="Deutsch");
+
+//Mathe schon gewählt    
+    var m=bereich(p.L1,"Mathematik") || bereich(p.L2,"Mathematik") 
+                    || bereich(p.L3,"Mathematik") || bereich(p.M1,"Mathematik");
+    if(!m) return (f[n].typ=="Mathematik");
+    
+    //Sonderfall KKST  
+    if(f[n].fname=="Italienisch bilingual") return false;
+    if(p.kkstbili==1) {
+             if(f[p.M1].fname!="Geschichte") return (f[n].fname=="Geschichte");
+            }
+    //----------------------------------------------------
+    
+ 
+    //Geographie und Gemeinschaftskunde nur zusammen
+    if((f[p.L3].fname=="Geographie") &&  (f[n].fname=="Gemeinschaftskunde")) return false;
+    if((f[p.L3].fname=="Gemeinschaftskunde") && (f[n].fname=="Geographie")) return false;
+    if((f[p.M1].fname=="Geographie") &&  (f[n].fname=="Gemeinschaftskunde")) return false;
+    if((f[p.M1].fname=="Gemeinschaftskunde") && (f[n].fname=="Geographie")) return false;
+
+//GW schon gewählt
+    var gw=bereich(p.L3,"Gesellschaft") || bereich(p.L3,"Religion") || bereich(p.L3,"Wirtschaft") || bereich(p.M1,"Religion") || bereich(p.M1,"Gesellschaft");
+    if(!gw) return (f[n].fname==p.RELIGION) || (f[n].typ=="Gesellschaft"); // keine Wirtschaft, da nur Leistungsfach
+
+    //Extrakurse zur Einhaltung von 40 Prüfungsfachkursen
+    if((f[p.L3].fname=="Wirtschaft") || (f[p.L3].fname=="Gemeinschaftskunde") ||(f[p.L3].fname=="Geographie")) anz40extra+=2;
+    if((f[p.L3].typ=="Religion") || (f[p.L3].typ=="Sport")) anz40extra+=4;
+    if((f[p.L3].typ=="BkMu") || (f[p.M1].typ=="BkMu")) anz40extra+=2;
+    if((f[p.M1].typ=="Religion") || (f[p.M1].typ=="Sport")) anz40extra+=4;
+    if((f[p.M1].fname=="Vertiefungskurs Mathematik") || (f[p.M1].fname=="Vertiefungskurs Sprache") 
+                ||(f[p.M1].fname=="Informatik in J1/J2") ||  (f[p.M1].fname=="Wahlsprache")
+                ||(f[p.M1].fname=="Literatur u. Theater")) anz40extra+=4;
+
+
+//ab hier D M GW vorhanden, Restwahl alle Profilfächer
+    for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+    if(f[n].typ=="Naturwissenschaft") return true;
+    for(i=0;i<ws.length;i++) if(ws[i]==n) return (anz40extra<=6);
+    if(f[n].typ=="Gesellschaft") return true;
+    if(f[n].typ=="Religion") return (f[n].fname==p.RELIGION) && (anz40extra<=6);
+    if(f[n].typ=="Naturwissenschaft") return true;
+    if(f[n].typ=="Sport") return (p.SPORTBEFREIT=="nein") && (anz40extra<=6);
+    if(f[n].typ=="BkMu") return (anz40extra<=6);
+    //if(f[n].fname=="Informatik in J1/J2") return (p.IMP=='ja') && (anz40extra<=6);
+    if(f[n].fname=="Vertiefungskurs Mathematik") return (anz40extra<=6);
+    if(f[n].fname=="Vertiefungskurs Sprache") return (anz40extra<=6);
+    if(f[n].fname=="Literatur u. Theater") return (anz40extra<=6);
+    return false;
+}
+
+
+function bereich(fachindex,b) {
+    if(window.parent.FAECHER[fachindex].typ==b) return true;
+    return false;
+}
+
+
+function bisher() {
+    var p=window.parent,r,nam;
+    r="Leistungsfächer (schriftlich): "+p.FAECHER[p.L1].fname+", ";
+    r+=p.FAECHER[p.L2].fname+", ";
+    r+=p.FAECHER[p.L3].fname;
+    nam=p.FAECHER[p.M1].fname;
+    if((nam=="Geographie") || (nam =="Gemeinschaftskunde")) nam="Geographie und Gemeinschaftskunde";
+    r+="</p><p>Mündliche Prüfungsfächer: <b>"+nam+"</b></p>";
+    return r;
+}
+
+
+function inhalt() {
+  var p=window.parent,f=p.FAECHER,i;
+  var text="<p><center>";
+  text+="<select id='leistungsfach' size=12>";
+
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            text+="<option value="+i;
+            if(p.M2==i) text+=" selected";
+            text+=">"+f[i].fname+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Mündlich</h1>
+</header>
+<content>
+<p>
+<script>document.write(bisher());</script>
+</p>
+<p>Wählen Sie das zweite mündliche Prüfungsfach:</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

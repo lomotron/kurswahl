@@ -1,0 +1,136 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=select("leistungsfach");
+    var p=window.parent,f=p.FAECHER;
+    if(s<0) { alert("Es muss mindestens ein Item gewählt werden"); return false; }
+    p.L3=s;
+    
+    //Sonderfall KKST Italienisch bilingual
+    var bili="Italienisch bilingual";
+    if(f[p.L3].fname==bili) p.kkstbili=1;
+    
+    return true;
+}
+
+
+function waehlbar(n) {
+    var f=window.parent.FAECHER,i,fs=window.parent.FREMDSPRACHE,ws=window.parent.WAHLSPRACHE;
+    if(n==window.parent.L1) return false;
+    if(n==window.parent.L2) return false;
+    
+    if(f[n].typ=='Deutsch') return true;
+    if(f[n].typ=='Mathematik') return true;
+    
+    var d=(f[window.parent.L1].typ=="Deutsch") || (f[window.parent.L2].typ=="Deutsch");
+    var m=(f[window.parent.L1].typ=="Mathematik") || (f[window.parent.L2].typ=="Mathematik");
+    
+    
+    //Sonderfall KKST -----------------------------------------
+    if((f[window.parent.L1].fname=="Italienisch") || (f[window.parent.L2].fname=="Italienisch")) {
+            if(f[n].fname=="Italienisch bilingual") return false;            
+            }
+    if(window.parent.kkstbili==1) {
+             if(!d && !m) return false;
+             if(f[n].fname=="Italienisch") return false;
+             if(f[n].typ=="Wirtschaft") return false;
+             if(f[n].fname=="Geographie") return false;
+             if(f[n].fname=="Geschichte") return false;
+            }
+    //----------------------------------------------------------
+    
+
+    if(d||m) { //alle Profilfächer
+        for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+        if(f[n].typ=="Naturwissenschaft") return true;
+        if((f[n].typ=="Sport") && (window.parent.SPORTBEFREIT=='nein')) return true;
+        if(f[n].typ=="BkMu") return true;
+        }
+        
+    //ab jetzt nur noch GW
+    
+    //Neu: Dank an Herrn Hofferer !  GW ausgeschlossen, wenn FS-FS oder NW-NW als L1 und L2
+    if(f[window.parent.L1].typ==f[window.parent.L2].typ) return false;
+             
+    //ab jetzt nur GW
+    if(f[n].typ=="Gesellschaft") return true;
+    if(f[n].typ=="Wirtschaft") return true;
+    if(f[n].typ=="Religion") return (f[n].fname==window.parent.RELIGION);
+    return false;
+}
+
+function bisher() {
+    var r="Bisher gewählt: <b>";
+    r+=window.parent.FAECHER[window.parent.L1].fname+"</b>, <b>";
+    r+=window.parent.FAECHER[window.parent.L2].fname+"</b>";
+    return r;
+}
+
+
+function inhalt() {
+  var f=window.parent.FAECHER,i;
+  var text="<p><center>";
+  text+="<select id='leistungsfach' size=12>";
+
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            text+="<option value="+i;
+            if(window.parent.L3==i) text+=" selected";
+            text+=">"+f[i].fname+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Leistungsfächer</h1>
+</header>
+<content>
+<p>
+<script> document.write(bisher());</script>
+</p>
+<p>Wählen Sie das dritte Leistungsfach aus:</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+
+</footer>
+</body>
+</html>

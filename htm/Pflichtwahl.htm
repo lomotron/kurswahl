@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+var TEXT="";
+var PFLICHTWAHL=false;
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var p=window.parent,i;
+    p.EXTRA=selectarray("extra");
+    if(PFLICHTWAHL && p.EXTRA.length==0) { alert("Sie müssen mindestens ein Fach wählen, sonst ist ihre Kurswahl ungültig"); return false;}
+    for(i=0;i<p.EXTRA.length;i++) p.extrawahl(p.EXTRA[i],true);
+    return true;
+}
+
+
+function waehlbar(index) {
+    var p=window.parent,w=p.WAHL[index];
+    if((p.SPORTBEFREIT=='ja') && (w.fname=="Sport")) return false;
+    return (w.apflicht==0) && (w.bpflicht==0);
+}
+
+function wahlpruefen() {
+        var p=window.parent,dat=p.wahldaten();
+        var text="";
+        if(dat[4]>40) {
+            text+="<p>****** Kurswahlfehler: Anzahl der Pflichtkurse ("+dat[4]+") ist größer als 40 *********<p>";
+            text+="<p>Dieser Fehler tritt auf, wenn als mündliche Prüfungsfächer zu viele Fächer gewählt werden,";
+            text+=" die nicht Profilfächer sind. Gehen Sie zurück und ändern Sie die Wahl mindestens eines mündlichen Prüfungsfachs.</p>";
+            text+="<p>Dieser Fall sollte eigentlich ausgeschlossen sein. Bitte kontaktieren Sie den Programmautor.</p>";
+            return text;
+            }
+
+        text+="<p>Ihre Kurswahl wurde durch weitere Pflichtkurse ergänzt. Sie müssen <b>mindestens 42 Kurse</b> besuchen, davon können nur <b>40 Kurse</b> im Abitur <b>abgerechnet</b> werden.</p>";
+        text+="<p>Sie haben bisher <b>"+dat[5]+"</b> Pflichtkurse gewählt. ";
+        text+="<p>Bisherige Wochenstundenzahlen: "+dat[0]+" - "+dat[1]+" - "+dat[2]+" - "+dat[3]+".</p>";
+        text+="<p>Da Sie die Mindestkurszahl von 42 ";   
+        if(dat[5]<42) { text+="<b>nicht</b>"; PFLICHTWAHL=true;} else PFLICHTWAHL=false;
+        text+=" erreicht haben, müssen Sie ";
+        if(PFLICHTWAHL) text+="<b>hier noch weitere zusätzliche Kurse wählen.</b>";
+        else text+="hier keine zusätzlichen Kurse wählen.";
+        text+="</p><p> ";
+        if(!PFLICHTWAHL) text+="(Freiwillige) ";
+        text+="Wahlmöglichkeiten: </p>";
+        text+="<p><center><select id='extra' multiple size=8>";
+        for(i=0;i<p.WAHL.length;i++) if(waehlbar(i)) {
+            text+="<option value="+i;
+            //selected
+            text+=">"+p.WAHL[i].fname+"</option>";
+            }
+        text+="</select></center></p>";
+        return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Pflichtwahl</h1>
+</header>
+<content>
+<script>
+document.write(wahlpruefen());
+</script>
+</content>
+<footer>
+</footer>
+</body>
+</html>

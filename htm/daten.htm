@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    window.parent.NAME=document.f.NAME.value;
+    window.parent.VORNAME=document.f.VORNAME.value;
+    window.parent.GEBURT=document.f.GEBURT.value;
+    window.parent.KLASSE=document.f.KLASSE.value;
+    return true;
+}
+
+function inhalt() {
+  var text="<table><tr><td style='{width: 50%;}'>Name: </td><td style='{width: 50%;}'><input name='NAME' type='text' value='"+window.parent.NAME+"'></td></tr>";
+  text+="<tr><td>Vorname: </td><td><input name='VORNAME' type='text' value='"+window.parent.VORNAME+"'></td></tr>";
+  text+="<tr><td>Geburtsdatum: </td><td><input name='GEBURT'  type='text' value='"+window.parent.GEBURT+"'></td></tr>";
+  text+="<td>Klasse: </td><td><input name='KLASSE' type='text' value='"+window.parent.KLASSE+"'></td></tr>";
+  text+="</table>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Persönliche Daten</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+<p><b>Hinweis zum Datenschutz:</b> Die oben und auf den folgenden Seiten eingegebenen Daten werden nicht auf dem Server gespeichert. Ihre Verarbeitung erfolgt ausschließlich auf dem Gerät, das die Seiten aufruft.</p>
+</content>
+<footer>
+</footer>
+</body>
+</html>

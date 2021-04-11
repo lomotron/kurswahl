@@ -1,0 +1,31 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<title>Kurswahl</title>
+<script language="JavaScript">
+function starten() {
+   	if(window.parent!=self){
+		window.parent.location=window.location.href;
+		return;
+	}
+}
+window.start=starten();
+</script>
+
+<script language="JavaScript" src="./schule.js"></script>
+<script language="JavaScript" src="../htm/daten.js"></script>
+<script language="JavaScript" src="../htm/wahlbogen.js"></script>
+</head>
+<frameset rows="*,10%" frameborder=0>
+  <frame name="inhalt" src="../htm/start.php">
+  <frame name="navigation" src="../htm/navigation.htm">
+  <noframes>
+  <body>
+  <p>Diese Seite verwendet Frames. Frames werden von Ihrem Browser aber nicht unterstüzt.</p>
+  </body>
+  </noframes>
+</frameset>
+</html>

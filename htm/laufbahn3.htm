@@ -1,0 +1,83 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+
+function zurueck() {
+    return true;
+}
+
+function ersterteil(s) {
+    var i;
+    i=s.indexOf(' ');
+    if(i<=0) return s;
+    return s.substring(0,i);
+}
+
+function weiter() {
+    var s=selectarray("wahlsprache");
+    if(s[0]=="keine") window.parent.WAHLSPRACHE=[];
+    else window.parent.WAHLSPRACHE=s;
+    return true;
+}
+
+function waehlbar(fach) {
+    if(fach.typ != 'Wahlsprache') return false;
+    var i,fs=window.parent.FREMDSPRACHE,nam=ersterteil(fach.fname),nami;
+    for(i=0;i<fs.length;i++) {
+        nami=ersterteil(window.parent.FAECHER[fs[i]].fname);
+        if((nami.indexOf(nam)>=0) || (nam.indexOf(nami)>=0)) return false;
+        }
+    return true;
+}
+
+
+function inhalt() {
+  var f=window.parent.FAECHER,i,j;
+  var text="<p>Welche Fremdsprachen haben Sie spätestens in Klasse "+window.parent.G89+" begonnen oder als AG besucht ?</p><p><center>";
+  text+="<select id='wahlsprache' multiple size=9><option ";
+  if(window.parent.WAHLSPRACHE.length==0) text+=" selected";
+  text+=">keine</option>";
+  for(i=0;i<f.length;i++) if(waehlbar(f[i])) {
+        text+="<option value="+i;
+        for(j=0;j<window.parent.WAHLSPRACHE.length;j++) if(window.parent.WAHLSPRACHE[j]==i) text+=" selected";
+        text+=">"+f[i].fname+"</option>";
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Schullaufbahn</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

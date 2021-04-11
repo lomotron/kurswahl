@@ -1,0 +1,92 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=selectarray("leistungsfach"),n=s.length;
+    var p=window.parent,f=p.FAECHER;
+    if((n<=1) ||(n>2)) { alert("Es müssen genau zwei Items gewählt werden"); return false; }
+    p.L1=s[0];
+    p.L2=s[1];
+    
+    //Sonderfall KKST Italienisch bilingual --------------------
+    p.kkstbili=0;
+    var bili="Italienisch bilingual",it="Italienisch";
+    if(((f[p.L1].fname==bili) && (f[p.L2].fname==it)) || ((f[p.L2].fname==bili) && (f[p.L1].fname==it))) {
+            alert(bili+" und "+it+" können nicht gleichzeitig gewählt werden");
+            return false;
+            }
+            
+    if(f[p.L1].fname==bili) p.kkstbili=1;
+    if(f[p.L2].fname==bili) p.kkstbili=1;
+    //--------------------------------------------------------- 
+     
+    return true;
+}
+
+function waehlbar(n) {
+    var f=window.parent.FAECHER,i,fs=window.parent.FREMDSPRACHE;
+    if(f[n].typ=='Deutsch') return true;
+    if(f[n].typ=='Mathematik') return true;
+    for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+    if(f[n].typ=="Naturwissenschaft") return true;
+    return false;
+}
+
+
+function inhalt() {
+  var f=window.parent.FAECHER,i;
+  var text="<p><center>";
+  text+="<select id='leistungsfach' multiple size=8>";
+
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            text+="<option value="+i;
+            if((window.parent.L1==i)||(window.parent.L2==i)) text+=" selected";
+            text+=">"+f[i].fname+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Leistungsfächer</h1>
+</header>
+<content>
+<p>Sie müssen insgesamt 3 Leistungsfächer wählen. In diesen Fächern müssen Sie eine schriftliche Abiturprüfung ablegen. Die Leistungsfächer werden mit 5 Wochenstunden unterrichtet. Mindestens zwei dieser Leistungsfächer müssen Deutsch, Mathematik, eine Fremdsprache oder eine Naturwissenschaft sein.</p>
+<p>Wählen Sie aus dem folgenden Angebot <b>genau zwei</b> Leistungsfächer aus:</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

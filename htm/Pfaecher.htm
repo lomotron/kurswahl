@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    return true;
+}
+
+
+function inhalt() {
+  var p=window.parent,nam,geogk=false;;
+  var r="<p>Schriftliche Abiturprüfung: <b>"+p.FAECHER[p.L1].fname+", ";
+  r+=p.FAECHER[p.L2].fname+", ";
+  r+=p.FAECHER[p.L3].fname+"</b>.</p>";
+  nam=p.FAECHER[p.M1].fname;
+  if((nam=="Geographie") || (nam =="Gemeinschaftskunde")) { nam="Geographie und Gemeinschaftskunde"; geogk=true; }
+  r+="<p>Mündliche Abiturprüfung: <b>"+nam+", ";
+  nam=p.FAECHER[p.M2].fname;
+  if((nam=="Geographie") || (nam =="Gemeinschaftskunde")) { nam="Geographie und Gemeinschaftskunde"; geogk=true; }
+  r+=nam+"</b>.</p>";
+  if(geogk) r+="<p>Hinweis: Geographie und Gemeinschaftskunde können nur als gemeinsames mündliches Prüfungsfach belegt werden.</p>";
+  return r;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Prüfungsfächer</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+<p>Die endgültige Wahl der mündlichen Prüfungsfächer erfolgt spätestens einen Schultag nach Ausgabe des Zeugnisses für das dritte Schulhalbjahr.</p>
+</content>
+<footer>
+</footer>
+</body>
+</html>

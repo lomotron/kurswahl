@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+var WAHL=true;
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+
+function weiter() {
+    var p=window.parent;
+    if(WAHL) {
+        var s=select("fach");
+        if(s<0) {  alert("Es muss mindestens ein Item gewählt werden"); return false; }
+        p.S=s;
+        }
+    p.wahlbogenerstellen();
+    return true;
+}
+
+
+function waehlbar(n) {
+    var p=window.parent,f=p.FAECHER,i,fs=p.FREMDSPRACHE;
+    
+    if(n==p.L1) return false;
+    if(n==p.L2) return false;
+    if(n==p.L3) return false;
+    if(n==p.M1) return false;
+    if(n==p.M2) return false;
+    if(n==p.NW) return false;
+    if(n==p.FS) return false;
+    if(n==p.NWFS) return false;
+    if(n==p.BkMu) return false;
+    
+    //Sonderfall KKST -------------------------------------------
+    if(f[n].fname=="Italienisch bilingual") return false;
+    if((p.kkstbili==1) && (f[n].fname=="Italienisch")) return false;
+    //-----------------------------------------------------------
+    
+    if(f[n].typ=="BkMu") return true;
+    if(f[n].typ=="Naturwissenschaft") return true;
+    for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+    return false;
+}
+
+function ausgleichfach() {
+    var p=window.parent.FAECHER, text="";
+    for(i=0;i<p.length;i++) if(waehlbar(i)) text+=p[i].fname+", ";
+    text=text.substring(0,text.length-2);
+    return text;
+}
+
+
+function inhalt() {
+  var p=window.parent,f=p.FAECHER,i,sp=0,text="";
+
+  if(f[p.L3].typ=="Sport") sp=1;
+  if(f[p.M1].typ=="Sport") sp=2;
+  if(f[p.M2].typ=="Sport") sp=2;
+
+  if(sp>0) {
+        WAHL=false;
+        text="<p>Sie haben bereits Sport als <b>";
+        if(sp==1) text+="Leistungsfach"; else text+="mündliches Prüfungsfach";
+        text+="</b> gewählt. Es ist keine weitere Wahl erforderlich</p>";
+        return text; 
+        }
+
+  if(p.SPORTBEFREIT=="ja") {
+        text="<p>Da Sie vom Sport befreit sind, müssen Sie eines der folgenden Fächer als Ersatz wählen:<p>";
+        text+="<center><select id='fach' size=8>";
+
+        for(i=0;i<f.length;i++) {
+            if(waehlbar(i)) {
+                text+="<option value="+i;
+                if(p.S==i) text+=" selected";
+                text+=">"+f[i].fname+"</option>";
+                }
+            }
+        text+="</select></center></p>";
+        return text;
+        }
+ 
+  for(i=0;i<f.length;i++) if(f[i].typ=="Sport") { p.S=i; break;}
+        WAHL=false;
+        text="<p>Das Fach Sport muss als Basisfach besucht werden. Die Wahl wurde entsprechend ergänzt.</p>";
+        text+="<p>Wenn Sie durch Krankheit einen oder mehrere Sportkurse nicht besuchen können, müssen Sie dafür als Ersatz Kurse aus den Fächern <b>"+ausgleichfach()+"</b> besuchen.</p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Sport</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

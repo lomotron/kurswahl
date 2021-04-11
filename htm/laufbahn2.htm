@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=selectarray("fremdsprache");
+    var p=window.parent;
+    if(s.length<2) { 
+            alert("Es müssen mindestens zwei Items gewählt werden");
+            return false;
+            }
+            
+    p.FREMDSPRACHE=selectarray("fremdsprache"); 
+    return true;
+}
+
+function inhalt() {
+  var f=window.parent.FAECHER,i,j;
+  var text="<p>Welche Fremdsprachen haben Sie bis spätestens in Klasse 8 begonnen ? Mehrfachauswahl mit Mausklick bei gedrückter Steuerungstaste(Strg). </p><p><center>";
+  text+="<select id='fremdsprache' multiple size=9>";
+
+  for(i=0;i<f.length;i++) if(f[i].typ == 'Sprache') {
+        text+="<option value="+i;
+        for(j=0;j<window.parent.FREMDSPRACHE.length;j++) if(window.parent.FREMDSPRACHE[j]==i) text+=" selected";
+        text+=">"+f[i].fname+"</option>";
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Schullaufbahn</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

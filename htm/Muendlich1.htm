@@ -1,0 +1,140 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=select("leistungsfach");
+    if(s<0) { alert("Es muss mindestens ein Item gewählt werden"); return false; }
+    window.parent.M1=s;
+    return true;
+}
+
+function bereich(fachindex,b) {
+    if(window.parent.FAECHER[fachindex].typ==b) return true;
+    return false;
+}
+
+
+function waehlbar(n) {
+    var p=window.parent,f=p.FAECHER,i,fs=p.FREMDSPRACHE,ws=p.WAHLSPRACHE;
+    
+    if(n==p.L1) return false;
+    if(n==p.L2) return false;
+    if(n==p.L3) return false;
+
+    if(f[n].typ=="Wirtschaft") return false;  //keine Wirtschaft da nur Leistungsfach
+
+    //Deutsch schon gewählt
+    var d=bereich(p.L1,"Deutsch") || bereich(p.L2,"Deutsch") || bereich(p.L3,"Deutsch"); 
+    if(!d) return (f[n].typ=="Deutsch");
+
+    //Mathe schon gewählt
+    var m=bereich(p.L1,"Mathematik") || bereich(p.L2,"Mathematik") || bereich(p.L3,"Mathematik"); 
+    if(!m) return (f[n].typ=="Mathematik");
+    
+    //Sonderfall KKST  
+    if(f[n].fname=="Italienisch bilingual") return false;
+    if(p.kkstbili==1) {
+             if(f[n].fname=="Geschichte") return true;
+             else return false;
+            }
+
+    //Geographie und Gemeinschaftskunde nur zusammen
+    if((f[p.L3].fname=="Geographie") &&  (f[n].fname=="Gemeinschaftskunde")) return false;
+    if((f[p.L3].fname=="Gemeinschaftskunde") && (f[n].fname=="Geographie")) return false;
+
+    //GW schon gewählt
+    var gw=bereich(p.L3,"Gesellschaft") || bereich(p.L3,"Religion") || bereich(p.L3,"Wirtschaft"); 
+    if(!gw) return (f[n].fname==p.RELIGION) || (f[n].typ=="Gesellschaft"); //keine Wirtschaft da nur Leistungsfach
+
+    //ab hier D M GW vorhanden, Restwahl
+
+    //alle Profilfächer
+    for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+    if(f[n].typ=="Naturwissenschaft") return true;
+    for(i=0;i<ws.length;i++) if(ws[i]==n) return true;
+    if(f[n].typ=="Gesellschaft") return true;
+    if(f[n].typ=="Religion") return (f[n].fname==p.RELIGION);
+    for(i=0;i<fs.length;i++) if(fs[i]==n) return true;
+    if(f[n].typ=="Naturwissenschaft") return true;
+    if(f[n].typ=="Sport") return (p.SPORTBEFREIT=="nein");
+    if(f[n].typ=="BkMu") return true;
+    //if(f[n].fname=="Informatik in J1/J2") return (p.IMP=='ja');
+    if(f[n].fname=="Vertiefungskurs Mathematik") return true;
+    if(f[n].fname=="Vertiefungskurs Sprache") return true;
+    if(f[n].fname=="Literatur u. Theater") return true;
+
+    return false;
+}
+
+function bisher() {
+    var r=window.parent.FAECHER[window.parent.L1].fname+", ";
+    r+=window.parent.FAECHER[window.parent.L2].fname+", ";
+    r+=window.parent.FAECHER[window.parent.L3].fname;
+    return r;
+}
+
+
+function inhalt() {
+  var f=window.parent.FAECHER,i,name;
+  var text="<p><center>";
+  text+="<select id='leistungsfach' size=12>";
+
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            name=f[i].fname;
+            text+="<option value="+i;
+            if(window.parent.M1==i) text+=" selected";
+            text+=">"+name+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Mündlich</h1>
+</header>
+<content>
+<p>Neben den bisher gewählten fünfstündigen Leistungsfächern mit schriftlicher Abiturprüfung (<b><script>document.write(bisher());</script></b>) müssen Sie zwei mündliche Prüfungsfächer wählen.</p>
+<p>Wählen Sie das erste mündliche Prüfungsfach:</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

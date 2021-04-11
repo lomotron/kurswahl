@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    window.parent.RELIGION=document.f.RELIGION.value;
+    //window.parent.IMP=document.f.IMP.value;
+    window.parent.SPORTBEFREIT=document.f.SPORTBEFREIT.value;
+    return true;
+}
+
+function inhalt() {
+  var f=window.parent.FAECHER,i,j;
+  var text="<table><tr><td width=50%>In Klasse "+window.parent.G89+" besuchter Ethik- oder Religionsunterricht:</td><th width=50%><select name='RELIGION'>";
+ 
+  for(i=0;i<f.length;i++) if(f[i].typ == 'Religion') {
+        text+="<option";
+        if(window.parent.RELIGION==f[i].fname) text+=" selected";
+        text+=">"+f[i].fname+"</option>";
+        } 
+  text+="</select></th></tr>";
+  //text+="<tr><td>Haben Sie in Klasse "+window.parent.G89+" in IMP oder einer Informatik-AG teilgenommen ?</td><th><select name='IMP'><option";
+  //if(window.parent.IMP=='ja') text+=" selected";
+  //text+=">ja</option><option "
+  //if(window.parent.IMP=='nein') text+=" selected";
+  //text+=">nein</option></th></tr>";
+
+  text+="<tr><td>Sind oder werden Sie vom Sportunterricht befreit ?</td><th><select name='SPORTBEFREIT'><option";
+  if(window.parent.SPORTBEFREIT=='ja') text+=" selected";
+  text+=">ja</option><option "
+  if(window.parent.SPORTBEFREIT=='nein') text+=" selected";
+  text+=">nein</option></th></tr>";
+
+  text+="</table>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Schullaufbahn</h1>
+</header>
+<content>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

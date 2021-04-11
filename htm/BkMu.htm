@@ -1,0 +1,106 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+var WAHL=true;
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function select(id) {
+   var a=selectarray(id);
+   if(a.length>0) return a[0];
+   return -1;
+}
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    if(!WAHL) return true;
+    var s=select("fach");
+    if(s<0) { alert("Es muss mindestens ein Item gewählt werden"); return false; }
+    window.parent.BkMu=s;
+    return true;
+}
+
+
+function waehlbar(n) {
+    var f=window.parent.FAECHER;
+    
+    if(n==window.parent.L1) return false;
+    if(n==window.parent.L2) return false;
+    if(n==window.parent.L3) return false;
+    if(n==window.parent.M1) return false;
+    if(n==window.parent.M2) return false;
+    if(n==window.parent.NW) return false;
+    if(n==window.parent.FS) return false;
+
+    if(f[n].typ=="BkMu") return true;
+    return false;
+}
+
+function bisher() {
+  
+}
+
+
+function inhalt() {
+  var f=window.parent.FAECHER,i,bm="",text="";
+
+  if(window.parent.FAECHER[window.parent.L1].typ=="BkMu") bm=window.parent.FAECHER[window.parent.L1].fname+" ";
+  if(window.parent.FAECHER[window.parent.L2].typ=="BkMu") bm=window.parent.FAECHER[window.parent.L2].fname+" ";
+  if(window.parent.FAECHER[window.parent.L3].typ=="BkMu") bm=window.parent.FAECHER[window.parent.L3].fname+" ";
+  if(window.parent.FAECHER[window.parent.M1].typ=="BkMu") bm=window.parent.FAECHER[window.parent.M1].fname+" ";
+  if(window.parent.FAECHER[window.parent.M2].typ=="BkMu") bm=window.parent.FAECHER[window.parent.M2].fname+" ";
+
+  if(bm!="") {
+        WAHL=false;
+        return "<p>Sie haben bereits gewählt: <b>"+bm+"</b> </p><p>Vorläufig keine weitere Wahl erforderlich</p>";
+        }
+  else text="<p>Wählen Sie ein Fach aus:</p><p><center>";
+  text+="<select id='fach' size=4>";
+
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            text+="<option value="+i;
+            if(window.parent.BkMu==i) text+=" selected";
+            text+=">"+f[i].fname+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Musik oder Kunst</h1>
+</header>
+<content>
+<p>Es muss entweder das Fach Musik oder Bildende Kunst belegt werden.</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>

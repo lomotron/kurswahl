@@ -1,0 +1,76 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-store,no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+
+function selectarray(id) {
+  var select=document.getElementById(id);
+  var result = [];
+  var options = select && select.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) result.push(opt.value || opt.text);
+    }
+  return result;
+}
+
+
+function zurueck() {
+    return true;
+}
+
+function weiter() {
+    var s=selectarray("leistungsfach"),n=s.length;
+    if((n<=1) ||(n>2)) { alert("Es müssen genau zwei Items gewählt werden"); return false; }
+    window.parent.DOPPELT=s;
+    return true;
+}
+
+function waehlbar(n) {
+    var p=window.parent;
+    if(n==p.L1) return true;
+    if(n==p.L2) return true;
+    if(n==p.L3) return true;
+    return false;
+}
+
+
+function inhalt() {
+  var p=window.parent,f=p.FAECHER,i;
+  var text="<p><center>";
+  text+="<select id='leistungsfach' multiple size=3>";
+  for(i=0;i<f.length;i++) {
+        if(waehlbar(i)) {
+            text+="<option value="+i;
+            if(p.DOPPELT.length==2) {if((p.DOPPELT[0]==i)||(p.DOPPELT[1]==i)) text+=" selected"; }
+            text+=">"+f[i].fname+"</option>";
+            }
+        }
+  text+="</select></center></p>";
+  return text;
+}
+
+</script>
+</head>
+<body>
+<header>
+<h1>Abiturnote</h1>
+</header>
+<content>
+<p>Die Abiturnote ergibt sich aus zwei Blöcken: In Block 1 werden die Halbjahresergebnisse ihrer Kurse eingerechnet. In Block 2 werden die Ergebnisse der Abiturprüfungen berücksichtigt.</p>
+<p>Die Halbjahresleistungen von zweien ihrer drei Leistungsfächer werden in Block 1 doppelt gezählt. Hier können Sie vorläufig bestimmen, welche Leistungsfächer das sein sollen. Diese Entscheidung können Sie noch bis spätestens einen Schultag nach Ausgabe des Zeugnisses für das vierte Schulhalbjahr ändern.</p>
+<p>Wählen Sie <b>genau zwei</b> Leistungsfächer, für die die <b>doppelte Wertung</b> gelten soll aus:</p>
+<form name="f">
+<script> document.write(inhalt());</script>
+</form>
+</content>
+<footer>
+</footer>
+</body>
+</html>
