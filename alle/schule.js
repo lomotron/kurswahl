@@ -66,7 +66,7 @@ addfach("Darstellende Geometrie",2,2,0,0,"Wahl");
 addfach("Informatik in J1/J2",2,2,2,2,"Informatik");
     
 // addfach("Literatur u. Theater",2,2,2,2,"Wahl");
-// addfach("Literatur",2,2,0,0,"Wahl");
+addfach("Literatur",2,2,0,0,"Wahl");
 // addfach("Philosophie",2,2,0,0,"Wahl");
 addfach("Psychologie",0,0,2,2,"Wahl");
 
