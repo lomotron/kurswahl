@@ -37,7 +37,10 @@ addfach("Bildende Kunst",2,2,2,2,"BkMu");
 addfach("Musik",2,2,2,2,"BkMu");
 
 addfach("Geschichte",2,2,2,2,"Gesellschaft");
-addfach("Gemeinschaftskunde",2,0,0,2,"Gesellschaft");
+addfach("Gemeinschaftskunde",2,2,0,0,"Gesellschaft");
+
+addfach("Erdkunde",0,0,2,2,"Gesellschaft");
+
 addfach("Geographie",0,2,2,0,"Gesellschaft");
 //addfach("Wirtschaft",5,5,5,5,"Wirtschaft");
 
@@ -64,11 +67,15 @@ addfach("Darstellende Geometrie",2,2,0,0,"Wahl");
 //addfach("Geologie",2,2,0,0,"Wahl");
 //addfach("Informatik",2,2,0,0,"Informatik");
 addfach("Informatik in J1/J2",2,2,2,2,"Informatik");
-    
+
+addfach("Gemeinschaftskunde plus",2,2,2,2,"Wahl");
+
 // addfach("Literatur u. Theater",2,2,2,2,"Wahl");
 addfach("Literatur",2,2,0,0,"Wahl");
 // addfach("Philosophie",2,2,0,0,"Wahl");
 addfach("Psychologie",0,0,2,2,"Wahl");
+
+
 
 addfach("Latein (ab 10)",3,3,3,3,"Wahlsprache");
 addfach("Italienisch (ab 10)",3,3,3,3,"Wahlsprache");
